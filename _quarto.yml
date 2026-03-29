@@ -1,0 +1,10 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "ModelOps and Model Experimentation: From Training Runs to Managed Models"
+  navbar:
+    left:
+      - text: "Workshop Slides"
+        href: workshop/slides/modelops-experimentation.html
