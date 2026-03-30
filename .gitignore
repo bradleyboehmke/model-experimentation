@@ -1,9 +1,7 @@
 # Quarto
 /.quarto/
 /_site/
-/docs/
 *_files/
-*.html
 
 # Python
 __pycache__/

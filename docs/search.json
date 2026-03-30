@@ -1,0 +1,226 @@
+[
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#applied-workshops-series",
+    "href": "workshop/slides/modelops-experimentation.html#applied-workshops-series",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Applied Workshops Series",
+    "text": "Applied Workshops Series\nBridging the gap between classroom and industry\n This series shares best practices and industry standards not always covered in coursework — practical skills that can differentiate you early in your career.\n\nFrame this as part of the applied workshop series. These workshops focus on practical skills that matter in industry but are often underrepresented in coursework. Today we move from data pipelines into the modeling lifecycle."
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#todays-agenda",
+    "href": "workshop/slides/modelops-experimentation.html#todays-agenda",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Today’s Agenda",
+    "text": "Today’s Agenda\n\nModelOps overview\nStructured experimentation\nExperiment tracking with MLflow\nRossmann project walkthrough\nLive demo\nWrap-up\n\n\n\n\n\n\n\n\nToday’s Goal\n\n\nWalk out understanding how to move from ad-hoc training runs to structured, trackable model experimentation.\n\n\n\n\nSet expectations: this is practical and hands-on. We’ll start with concepts, ground them in a real project, and then see it live in MLflow. The goal is a mental model you can apply to your own work immediately."
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#how-do-you-currently-track-your-models",
+    "href": "workshop/slides/modelops-experimentation.html#how-do-you-currently-track-your-models",
+    "title": "ModelOps and Model Experimentation",
+    "section": "How do you currently track your models?",
+    "text": "How do you currently track your models?\n\n\nTypical workflow:\n\nTrain a model in a notebook\nTweak some parameters\nRerun the cell\nMaybe rename the notebook\nTry to remember what worked\n\n\n\n\n\n\n\n\n\n\n\nSound familiar?\n\n\nMost of us have been here. It might work for small projects, but it doesn’t scale. In industry, its not uncommon to try tens, hundreds, or even thousands of experiments! Without structure, you lose track of what works, what changed, and how to reproduce results.\n\n\n\n\n\nStart by asking students directly: “How do you keep track of your model experiments right now?”\nLet a few people answer — you’ll hear things like “I rename notebooks”, “I keep a spreadsheet”, “I just remember”\nDon’t judge — make it relatable. Everyone starts here\nThe goal is to surface the pain before offering the solution"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#what-is-modelops",
+    "href": "workshop/slides/modelops-experimentation.html#what-is-modelops",
+    "title": "ModelOps and Model Experimentation",
+    "section": "What Is ModelOps?",
+    "text": "What Is ModelOps?\n\n\n\n\n\n\nModelOps\n\n\nManagement of the lifecycle of machine learning models\n\n\n\n\n\n\n\n\n\nflowchart RL\n    subgraph dt[DataOps]\n    direction LR\n    end\n    subgraph ml[ModelOps]\n    direction LR\n    m1[Model Experimentation]\n    m2[Model Versioning]\n    m3[Model Deployment]\n    m4[Model Monitoring]\n    m1 --&gt; m2 --&gt; m3 --&gt; m4 --&gt; m1\n    end\n    dt --&gt; ml --&gt; dt\n\n\n\n\n\n\n\n\nModelOps is the discipline of managing models throughout their entire lifecycle\nThe lifecycle is a cycle: experimentation → versioning → deployment → monitoring → back to experimentation\nNote how this connects to DataOps — reliable models depend on reliable data pipelines\nEach stage feeds into the next, and monitoring in production informs future experiments\nMost people think “ML” means training a model. That’s only one piece of a much larger system\nToday we focus on the first stage: experimentation and tracking\nLet’s break down what each stage actually does…"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#modelops-is-not-just-training",
+    "href": "workshop/slides/modelops-experimentation.html#modelops-is-not-just-training",
+    "title": "ModelOps and Model Experimentation",
+    "section": "ModelOps Is Not Just Training",
+    "text": "ModelOps Is Not Just Training\n\n\nWhat most people focus on:\n\nFeature engineering\nAlgorithm selection\nHyperparameter tuning\nModel accuracy\n\n\nWhat ModelOps adds:\n\nReproducibility\nExperiment tracking\nModel versioning\nDeployment strategy\nPerformance monitoring\n\n\n\n\n\n\n\n\n\nTip\n\n\nTraining a model is the beginning, not the end.\n\n\n\n\n\nIn school, the finish line is model accuracy. In industry, that’s the starting line\nModelOps asks: can you reproduce this result? Can you deploy it? Can you monitor it?\nReproducibility means someone else (or future you) can get the same results\nThis is critical for regulated industries (finance, healthcare) and for team collaboration\nWe’ll spend today on the experimentation and tracking piece — the foundation for everything else"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#why-modelops-matters",
+    "href": "workshop/slides/modelops-experimentation.html#why-modelops-matters",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Why ModelOps Matters",
+    "text": "Why ModelOps Matters\nQuestions that haunt production ML teams:\n\n“Which model version is in production?”\n“What hyperparameters did we use?”\n“Can you reproduce last quarter’s results?”\n“Why did performance drop?”\n\n\n\n\n\n\n\n\n\nThe Root Problem\n\n\nMost teams focus on training accuracy but neglect reproducibility, versioning, deployment, and monitoring — the foundation for production ML systems.\n\n\n\n\n\nThe solution: Manage models as lifecycle assets, not just training artifacts.\n\n\nStart with the pain — these are real questions that come up in industry constantly\nWithout systematic practices, the answers are often “I’m not sure” or “let me dig through old notebooks”\nIn school, the finish line is model accuracy. In industry, that’s the starting line\nThe problem: teams build models but can’t reproduce them, deploy them confidently, or maintain them over time\nThis slide hooks students with the problem before introducing ModelOps as the solution\nThe last line sets up the next slide: “What does it mean to manage models as lifecycle assets?”"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#how-do-you-track-experiments-today",
+    "href": "workshop/slides/modelops-experimentation.html#how-do-you-track-experiments-today",
+    "title": "ModelOps and Model Experimentation",
+    "section": "How Do You Track Experiments Today?",
+    "text": "How Do You Track Experiments Today?\n\n\nTypical workflow:\n\nTrain a model in a notebook\nTweak some parameters\nRerun the cell\nRename the notebook (model_v2_final_FINAL.ipynb)\nCopy-paste results into a spreadsheet\nComment out old code\nTry to remember what worked\n\n\n\n\n\n\n\n\n\n\n\nSound familiar?\n\n\nMost of us have been here. It works for small projects, but doesn’t scale. In industry, it’s not uncommon to try tens, hundreds, or even thousands of experiments!\n\n\n\n\n\nAsk students directly: “How do you keep track of your model experiments right now?”\nLet a few people answer — you’ll hear things like “I rename notebooks”, “I keep a spreadsheet”, “I just remember”\nShow of hands: “Who has a file called something_final_v2 or model_FINAL_REALLY_FINAL?”\nDon’t judge — make it relatable. Everyone starts here. This is the natural first approach\nBut without structure, you lose track of what works, what changed, and how to reproduce results\nThe goal of this slide is to surface the tactical pain before offering the solution\nTransition: let’s talk about what specifically goes wrong with this approach"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#the-problems",
+    "href": "workshop/slides/modelops-experimentation.html#the-problems",
+    "title": "ModelOps and Model Experimentation",
+    "section": "The Problems",
+    "text": "The Problems\n\n\nWhich run was best?\nYou trained 15 models. Three weeks later, which one had the best performance?\nWhere are those hyperparameters?\n\nWhat changed?\nYou improved RMSE by 12%. Was it the feature engineering? The learning rate? The data split?\nYou don’t know.\n\nCan you reproduce it?\nYour manager asks you to rerun last month’s best model.\nCan you recreate the exact same result?\n\n\n\n\n\n\nWalk through each problem concretely\n“Which run was best?” — when you have a dozen notebooks with different experiments, finding the best one becomes archaeology\n“What changed?” — without logging, you can’t attribute improvement to a specific change\n“Can you reproduce?” — this is the killer. If you can’t reproduce results, you can’t trust them, deploy them, or build on them\nThese problems compound as teams grow and projects mature"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#good-modeling-structured-experimentation",
+    "href": "workshop/slides/modelops-experimentation.html#good-modeling-structured-experimentation",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Good Modeling = Structured Experimentation",
+    "text": "Good Modeling = Structured Experimentation\n\n\n\n\n\n\nThe Principle\n\n\nTreat each training run as a trackable experiment, not a throwaway cell execution.\n\n\n\n\nEvery experiment should capture:\n\nWhat you tried (parameters, algorithm, data & features used)\nWhat happened (metrics, performance)\nWhat you produced (model artifacts)\n\n\n\nThis is the core mindset shift\nA notebook cell execution is ephemeral — an experiment is a permanent record\nStructured experimentation doesn’t mean more work — it means the right work\nThink of it like a lab notebook in science: you record what you did so others (and future you) can understand and reproduce it"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#what-to-track",
+    "href": "workshop/slides/modelops-experimentation.html#what-to-track",
+    "title": "ModelOps and Model Experimentation",
+    "section": "What to Track",
+    "text": "What to Track\n\n\n\n\n\nflowchart LR\n    A[\"&lt;b&gt;Parameters&lt;/b&gt;&lt;br/&gt;Learning rate&lt;br/&gt;Max depth&lt;br/&gt;Algorithm\"] --&gt; E[Experiment Run]\n    B[\"&lt;b&gt;Data & Features&lt;/b&gt;&lt;br/&gt;Dataset version&lt;br/&gt;Feature engineering&lt;br/&gt;Train/test splits\"] --&gt; E\n    C[\"&lt;b&gt;Metrics&lt;/b&gt;&lt;br/&gt;RMSE, MAE, R²&lt;br/&gt;Per-fold CV scores\"] --&gt; E\n    D[\"&lt;b&gt;Artifacts&lt;/b&gt;&lt;br/&gt;Trained model&lt;br/&gt;Predictions&lt;br/&gt;Feature importance\"] --&gt; E\n    E --&gt; F[\"&lt;b&gt;Tracked Record&lt;/b&gt;&lt;br/&gt;Reproducible&lt;br/&gt;Comparable&lt;br/&gt;Shareable\"]\n\n\n\n\n\n\n\n\nFour categories of things to track for every experiment run\nParameters: hyperparameters that control the algorithm — learning rate, max depth, regularization\nData & Features: what data you used — dataset version, feature engineering steps, train/test/validation splits. Critical for reproducibility\nMetrics: the results — RMSE, MAE, accuracy, per-fold cross-validation scores\nArtifacts: the outputs — the trained model file, predictions CSV, feature importance plots\nTogether, these create a complete record that can be compared, reproduced, and shared"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#why-structure-matters",
+    "href": "workshop/slides/modelops-experimentation.html#why-structure-matters",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Why Structure Matters",
+    "text": "Why Structure Matters\n\n\n\n\n\nWalk through the three benefits shown in the visual:\nCompare: when you have 100 hyperparameter trials logged, you can sort by metric and instantly find the best configuration. Side-by-side comparison across runs helps identify what works and what doesn’t\nReproduce: if a model in production degrades, you can go back to the exact experiment that produced it and understand what’s different. Essential for debugging and auditing\nExplain: in industry, you need to justify model choices to non-technical stakeholders. Tracked experiments give you evidence and demonstrate rigor in your process\nThis isn’t overhead — it’s how professional data science works"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#what-is-mlflow",
+    "href": "workshop/slides/modelops-experimentation.html#what-is-mlflow",
+    "title": "ModelOps and Model Experimentation",
+    "section": "What Is MLflow?",
+    "text": "What Is MLflow?\n\n\n\n\n\n\nMLflow\n\n\nAn open-source platform for managing the end-to-end ML lifecycle — experiment tracking, model versioning, and deployment.\n\n\n\nWhy MLflow?\n\nOpen source and free\nIntegrated into many platforms (Databricks, AWS SageMaker, Azure ML)\nWorks with any ML library (scikit-learn, XGBoost, LightGBM, PyTorch)\nSimple Python API\nBuilt-in UI for comparing experiments\nModel registry for versioning\n\n\n\n\n\n\n\nOther Options\n\n\nMLflow is one of the most widely adopted experiment tracking tools, but alternatives include Weights & Biases, Neptune.ai, Comet.ml, and DVC.\n\n\n\n\n\nMLflow is the tool we’ll use for experiment tracking today\nIt’s not the only option — Weights & Biases, Comet.ml, Neptune.ai, and DVC are alternatives\nWe use MLflow because it’s open source, widely adopted, and integrates with virtually any ML framework\nIt has four main components: tracking, projects, models, and registry. Today we focus on tracking"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#the-mental-model",
+    "href": "workshop/slides/modelops-experimentation.html#the-mental-model",
+    "title": "ModelOps and Model Experimentation",
+    "section": "The Mental Model",
+    "text": "The Mental Model\n\n\n\n\n\n\nKey Concept\n\n\nA run = one experiment attempt. An experiment = a collection of related runs.\n\n\n\n\n\n\n\n\n\nflowchart TD\n    A[\"&lt;b&gt;Experiment&lt;/b&gt;&lt;br/&gt;rossmann-forecasting\"] --&gt; B[\"Run 1&lt;br/&gt;Naive Baseline\"]\n    A --&gt; C[\"Run 2&lt;br/&gt;LightGBM Default\"]\n    A --&gt; D[\"Run 3&lt;br/&gt;XGBoost Tuned\"]\n    A --&gt; E[\"Run 4&lt;br/&gt;Ensemble\"]\n\n    B --&gt; F[\"params + metrics + artifacts\"]\n    C --&gt; G[\"params + metrics + artifacts\"]\n    D --&gt; H[\"params + metrics + artifacts\"]\n    E --&gt; I[\"params + metrics + artifacts\"]\n\n\n\n\n\n\n\n\nAn experiment groups related runs together under one name (e.g., “rossmann-forecasting”)\nA run is a single training attempt — one set of hyperparameters, one model, one set of results\nEach run captures parameters, metrics, and artifacts automatically\nYou can have hundreds of runs in one experiment — MLflow makes them searchable, sortable, and comparable\nThis is the mental model to carry through the rest of the workshop"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#how-tracking-works",
+    "href": "workshop/slides/modelops-experimentation.html#how-tracking-works",
+    "title": "ModelOps and Model Experimentation",
+    "section": "How Tracking Works",
+    "text": "How Tracking Works\nEvery model run follows this pattern:\n\n\n\n\n\n\nflowchart LR\n    A[Start Run] --&gt; B[Log Parameters]\n    B --&gt; C[Train Model]\n    C --&gt; D[Log Metrics]\n    D --&gt; E[Save Artifacts]\n    E --&gt; F[Log Metadata]\n\n\n\n\n\n\n\nwith mlflow.start_run(run_name=\"lightgbm_baseline\"):\n    mlflow.log_param(\"learning_rate\", 0.01)\n    mlflow.log_param(\"max_depth\", 6)\n\n    # Train & evaluate model\n    model.fit(X_train, y_train)\n    y_pred = model.predict(X_test)\n    mse = mean_squared_error(y_test, y_pred)\n\n    mlflow.log_metric(\"mse\", mse)\n\n    mlflow.sklearn.log_model(model, \"model\")\n    mlflow.set_tag(\"experiment_type\", \"baseline\")\n\n\nWalk through the code pattern step by step\nstart_run creates a tracked context — everything inside gets logged\nlog_param records hyperparameters — these define the experiment\nAfter training, log_metric records results\nlog_model saves the actual trained model as an artifact\nset_tag adds searchable metadata for filtering in the UI\nThis is the core pattern you’ll see in every MLflow-integrated project"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#what-mlflow-captures",
+    "href": "workshop/slides/modelops-experimentation.html#what-mlflow-captures",
+    "title": "ModelOps and Model Experimentation",
+    "section": "What MLflow Captures",
+    "text": "What MLflow Captures\n\n\n\n\n\n\n\n\nComponent\nWhat’s Logged\nExample\n\n\n\n\nRun Name\nDescriptive identifier\nlightgbm_tuning_trial_42\n\n\nParameters\nHyperparameters & config\nlearning_rate=0.01, max_depth=6\n\n\nMetrics\nPerformance scores\ncv_rmspe_mean=0.098, per-fold RMSPE\n\n\nArtifacts\nFiles (models, data, plots)\nTrained model, predictions CSV\n\n\nTags\nSearchable metadata\nexperiment_type=\"tuning\"\n\n\nSystem Info\nEnvironment details\nPython version, library versions\n\n\n\n\n\nMLflow automatically captures system information (Python version, library versions) so you know the exact environment\nRun names should be descriptive — lightgbm_lr0.01_depth6 is better than run_42\nTags are powerful for filtering — you can search for all “baseline” runs or all “tuning” runs in the UI\nArtifacts can be anything: models, CSVs, plots, configuration files"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#the-mlflow-ui",
+    "href": "workshop/slides/modelops-experimentation.html#the-mlflow-ui",
+    "title": "ModelOps and Model Experimentation",
+    "section": "The MLflow UI",
+    "text": "The MLflow UI\n\n\n\n\nThe UI lets you:\n\nCompare runs side-by-side\nSort and filter by any metric\nView logged parameters and artifacts\nDownload models for further use\nTrace model lineage\n\n\n\n\nAfter running experiments, launch the UI with mlflow ui in the terminal\nOpens at http://localhost:5000 by default\nWalk through the screenshot: point out the experiment list, run table, columns for metrics/parameters\nShow that you can select multiple runs and compare them\nThe UI is where the value of tracking becomes tangible — instead of digging through notebooks, everything is searchable and sortable\nYou can filter runs by metrics (e.g., show me all runs with RMSPE &lt; 0.10)"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#rossmann-store-sales-forecasting",
+    "href": "workshop/slides/modelops-experimentation.html#rossmann-store-sales-forecasting",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Rossmann Store Sales Forecasting",
+    "text": "Rossmann Store Sales Forecasting\nThe project:\nForecast daily sales for 3,000+ retail stores across a full region\n\n\n\nWhy this example?\n\nReal-world Kaggle competition\nMultiple modeling approaches\nNatural progression from simple to complex\nFull MLflow integration\n\n\nMLflow tracks everything:\n\nBaseline models\nHyperparameter tuning trials\nFinal ensemble model\nModel registry\n\n\n\n\n\n\n\n\nNote\n\n\nhttps://github.com/bradleyboehmke/rossmann-forecasting\n\n\n\n\n\nThe Rossmann project is our running example throughout this workshop series\nIn the DataOps workshop, we looked at data pipelines. Now we look at the modeling side\nThis project uses MLflow to track every experiment from naive baselines through advanced ensembles\nIt demonstrates a realistic experimentation workflow — the kind you’d use in industry"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#the-experimentation-workflow",
+    "href": "workshop/slides/modelops-experimentation.html#the-experimentation-workflow",
+    "title": "ModelOps and Model Experimentation",
+    "section": "The Experimentation Workflow",
+    "text": "The Experimentation Workflow\n\n\n\n\n\n\n\ngraph TD\n    subgraph EXP[\"Experimentation Workflow\"]\n        A[\"&lt;b&gt;NB 03:&lt;/b&gt; Baseline Models&lt;br/&gt;Naive: RMSPE 0.47&lt;br/&gt;LightGBM: RMSPE 0.14\"]\n        B[\"&lt;b&gt;NB 04:&lt;/b&gt; Advanced Models&lt;br/&gt;Tuned LightGBM, XGBoost, CatBoost&lt;br/&gt;Initial ensemble\"]\n        C[\"&lt;b&gt;NB 04b:&lt;/b&gt; Hyperparameter Tuning&lt;br/&gt;50 Optuna trials per model&lt;br/&gt;XGBoost: 0.122, LightGBM: 0.127, CatBoost: 0.130\"]\n        D[\"&lt;b&gt;NB 05:&lt;/b&gt; Final Evaluation&lt;br/&gt;Weighted ensemble (60% XGBoost, 30% LightGBM, 10% CatBoost)&lt;br/&gt;Register in MLflow Model Registry\"]\n\n        A --&gt; B\n        B --&gt; C\n        C --&gt; D\n    end\n\n    EXP --&gt; E[\"&lt;b&gt;MLflow Tracking&lt;/b&gt;&lt;br/&gt;All runs logged in real-time&lt;br/&gt;Compare across all experiments\"]\n\n    style A fill:#e1f5ff\n    style B fill:#e1f5ff\n    style C fill:#e1f5ff\n    style D fill:#e1f5ff\n    style E fill:#fff4e6\n\n\n\n\n\n\n\n\n\n\n\nWalk through the actual 4-notebook experimentation workflow from the Rossmann project\nNotebook 03 — Baselines: Starts with naive baseline (last week’s sales, RMSPE 0.47) and simple LightGBM with default params (RMSPE 0.14). This establishes the performance floor\nNotebook 04 — Advanced Models: Trains tuned LightGBM, XGBoost, and CatBoost with manually specified hyperparameters. Creates initial weighted ensemble\nNotebook 04b — Hyperparameter Tuning: Uses Optuna for automated hyperparameter search. 50 trials per model. All tracked in MLflow. Best results: XGBoost 0.122, LightGBM 0.127, CatBoost 0.130\nNotebook 05 — Final Evaluation: Creates final weighted ensemble (60% XGBoost, 30% LightGBM, 10% CatBoost), evaluates on holdout set, and registers in MLflow Model Registry\nDuring the demo, we’ll run these notebooks and watch the experiments appear in MLflow in real-time\nEach phase builds systematically — baselines → advanced models → automated tuning → final evaluation"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#baseline-to-production-what-changes",
+    "href": "workshop/slides/modelops-experimentation.html#baseline-to-production-what-changes",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Baseline to Production: What Changes",
+    "text": "Baseline to Production: What Changes\n\n\nPhase 1: Baseline\nwith mlflow.start_run(\n    run_name=\"naive_baseline\"):\n\n    mlflow.log_param(\n        \"model_type\", \"naive\")\n    mlflow.log_metric(\n        \"cv_rmspe_mean\", 0.24)\nSimple model, simple logging.\nEstablishes the floor.\n\nPhase 2: Tuning\nwith mlflow.start_run(\n    run_name=\"lgbm_trial_42\"):\n\n    mlflow.log_param(\n        \"learning_rate\", 0.01)\n    mlflow.log_param(\n        \"max_depth\", 6)\n    mlflow.log_param(\n        \"num_leaves\", 31)\n    mlflow.log_metric(\n        \"cv_rmspe_mean\", 0.098)\n    mlflow.set_tag(\n        \"experiment_type\", \"tuning\")\nMore parameters, systematic search.\n\n\n\nShow how the complexity of tracking grows with the complexity of the experiment\nBaselines are simple: few parameters, one metric, just establishing a benchmark\nTuning runs log many more hyperparameters because you need to know exactly what configuration produced each result\nTags help you filter — in Phase 2 you might have hundreds of runs. Tags let you find specific subsets\nThe tracking pattern is the same. The depth changes"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#from-experiments-to-model-registry",
+    "href": "workshop/slides/modelops-experimentation.html#from-experiments-to-model-registry",
+    "title": "ModelOps and Model Experimentation",
+    "section": "From Experiments to Model Registry",
+    "text": "From Experiments to Model Registry\n\n\n\n\n\nflowchart LR\n    A[Best Experiment Run] --&gt; B[Train Final Model]\n    B --&gt; C[Evaluate on Holdout]\n    C --&gt; D{Meets threshold?}\n    D --&gt;|Yes| E[Register in Model Registry]\n    D --&gt;|No| F[Back to Tuning]\n    E --&gt; G[Staging]\n    G --&gt; H[Production]\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nThe Model Registry is where experiments become deployable assets.\n\n\n\n\n\nThe Model Registry is the bridge between experimentation and deployment\nAfter identifying the best hyperparameters from tuning, you train a final model and evaluate it against a holdout test set\nIf it meets performance thresholds, you register it in the Model Registry\nThe registry supports stages: None → Staging → Production\nThis gives you a controlled promotion path — models don’t go directly to production without validation\nIn the Rossmann project, the final ensemble is registered and promoted through these stages"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#what-to-watch-for",
+    "href": "workshop/slides/modelops-experimentation.html#what-to-watch-for",
+    "title": "ModelOps and Model Experimentation",
+    "section": "What to Watch For",
+    "text": "What to Watch For\nDuring the demo, pay attention to:\n\n\nRuns — How each training attempt becomes a tracked record\nMetrics — How performance is logged and compared across runs\nComparisons — How MLflow makes it easy to find the best model\nArtifacts — What gets saved with each experiment\n\n\n\n\n\n\n\n\nNote\n\n\nWe’ll launch MLflow, explore existing experiments from the Rossmann project, and run new experiments to see tracking in action.\n\n\n\n\n\nBefore starting the demo, set expectations for what students should look for\nThey should watch for: how runs appear in the UI, how metrics get logged and displayed, how comparison works across runs, and what artifacts are stored\nDemo plan:\n\nNavigate to the rossmann-forecasting project directory\nLaunch MLflow UI with mlflow ui\nOpen browser to http://localhost:5000\nExplore existing experiment runs — show parameters, metrics, artifacts\nSelect multiple runs and use the Compare view\nSort by cv_rmspe_mean to find the best model\nClick into a run to show logged artifacts (model, predictions, feature importance)\nShow the Model Registry if models are registered\n\nKeep it interactive — ask students what they notice as you navigate"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#demo-launching-mlflow",
+    "href": "workshop/slides/modelops-experimentation.html#demo-launching-mlflow",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Demo: Launching MLflow",
+    "text": "Demo: Launching MLflow\n# Navigate to the project\ncd ~/Desktop/Projects/rossmann-forecasting\n\n# Launch MLflow UI\nmlflow ui\n\n# Open browser to http://localhost:5000\n\nConfiguration (from config/params.yaml):\nmlflow:\n  tracking_uri: ./mlruns\n  experiment_name: rossmann-forecasting\n  artifact_location: ./mlartifacts\n  server:\n    host: 127.0.0.1\n    port: 5000\n\n\nShow the MLflow configuration in the project — it’s defined in a YAML file, keeping it separate from code\ntracking_uri points to a local directory (can be a remote server in production)\nexperiment_name groups all runs under one experiment\nWalk through the UI as it loads — point out the experiment list, run table, and column controls\nIf time permits, show how to run a new experiment and watch it appear in the UI"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#demo-exploring-experiments",
+    "href": "workshop/slides/modelops-experimentation.html#demo-exploring-experiments",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Demo: Exploring Experiments",
+    "text": "Demo: Exploring Experiments\n[IMAGE: MLflow experiment comparison view]\nTry these actions:\n\nSelect two or more runs\nClick “Compare”\nSort by cv_rmspe_mean\nFilter by tags (e.g., experiment_type = \"tuning\")\nClick into a run — explore parameters and artifacts\n\n\n\nWalk through each action live\nEmphasize: this is the payoff of structured tracking. Instead of digging through notebooks, everything is here\nShow sorting — the best model floats to the top\nShow filtering — tags let you focus on baseline vs. tuning vs. ensemble runs\nShow artifacts — click into a run and show the trained model, predictions file, and any logged plots\nAsk students: “How would you do this without experiment tracking?”"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#key-takeaways",
+    "href": "workshop/slides/modelops-experimentation.html#key-takeaways",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\n\n\nModelOps = lifecycle management: Training is just the beginning\nExperiments need structure: Track parameters, metrics, and artifacts for every run\nMLflow enables tracking: Open source, simple API, powerful UI for comparison\n\n\n\nReinforce the three core takeaways\nModelOps is about the full lifecycle, not just training accuracy\nStructured experimentation is what separates ad-hoc notebook work from professional data science\nMLflow is a practical tool that makes this achievable without heavy infrastructure\nThese concepts apply regardless of the tool — the principles matter more than any specific platform"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#the-progression",
+    "href": "workshop/slides/modelops-experimentation.html#the-progression",
+    "title": "ModelOps and Model Experimentation",
+    "section": "The Progression",
+    "text": "The Progression\n\n\n\n\n\n\nDon’t Start With Complexity\n\n\nProjects evolve progressively. You don’t build all this on day one!\n\n\n\n\n\nStage 1: Exploration (Notebook-based) → Ad-hoc experiments, manual tracking, quick iteration\nStage 2: Structured Experimentation (MLflow tracking) → Logged runs, parameter tracking, reproducible results\nStage 3: Production (Full ModelOps) → Model registry, deployment pipelines, monitoring\n\n\n\nJust like the DataOps workshop showed progression from notebooks to production data pipelines, ModelOps follows the same pattern\nStage 1 is where everyone starts — and that’s fine. Notebooks are great for exploration\nStage 2 is today’s focus — adding structure to your experiments. This is achievable with minimal effort using MLflow\nStage 3 adds deployment, monitoring, and automated retraining — that’s the next level\nThe key is recognizing when it’s time to move to the next stage. If you’re running the same experiments repeatedly and losing track of results, it’s time for Stage 2"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#study-the-rossmann-repository",
+    "href": "workshop/slides/modelops-experimentation.html#study-the-rossmann-repository",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Study the Rossmann Repository",
+    "text": "Study the Rossmann Repository\nExplore how experimentation fits into a production-grade ML project:\n\n\n\nWhat to look for:\n\nHow experiments are organized\nWhat gets logged for each run\nHow baselines establish benchmarks\nHow tuning narrows the search\nHow the final model is registered\n\n\nKey files:\n\nsrc/utils/mlflow_utils.py\nsrc/models/train_final.py\nsrc/models/model_registry.py\nconfig/params.yaml\ndocs/modelops/tracking.md\n\n\n\n\n\n\n\n\nNote\n\n\nhttps://bradleyboehmke.github.io/rossmann-forecasting/modelops/overview/\n\n\n\n\n\nEncourage students to spend real time with this repo\nPoint out the key files: mlflow_utils.py has the tracking utilities, train_final.py shows the production training pattern, model_registry.py handles model versioning\nThe tracking documentation in docs/modelops/tracking.md walks through the full experimentation workflow\nThis is their reference implementation for how to do experiment tracking in practice"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#now-start-practicing",
+    "href": "workshop/slides/modelops-experimentation.html#now-start-practicing",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Now Start Practicing",
+    "text": "Now Start Practicing\nApply these concepts to your own projects:\n\nAdd MLflow tracking to an existing project\nStart with simple log_param and log_metric calls\nUse the UI to compare your experiments\n\n\n\n\n\n\n\n\nGetting Started\n\n\npip install mlflow\nimport mlflow\nmlflow.set_experiment(\"my-project\")\nwith mlflow.start_run(run_name=\"first_experiment\"):\n    mlflow.log_param(\"model_type\", \"random_forest\")\n    mlflow.log_metric(\"rmse\", 0.45)\nmlflow ui\n\n\n\n\n\nGive them a concrete starting point — three commands to go from zero to tracked experiments\nEmphasize: start simple. You don’t need to track everything on day one. Even logging model type and one metric is a huge improvement over nothing\nThe habit matters more than the completeness. Once you start tracking, you’ll naturally want to track more\nPoint them to the MLflow documentation for deeper exploration"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#thank-you",
+    "href": "workshop/slides/modelops-experimentation.html#thank-you",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Thank You!",
+    "text": "Thank You!\nQuestions?\n\nResources:\n\nRossmann Forecasting Project\nMLflow Documentation\nMLflow Quickstart\n\n\nOpen for questions. Encourage students to reach out after the workshop.\nFinal encouragement: “Start small. Add MLflow to one project this week. Track one experiment. See how it feels. The hardest part is starting — once you see the value, you won’t go back to untracked experiments.”\nRemind them: the Rossmann repo is their reference implementation. They can study it, fork it, and apply the same patterns to their own work."
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#modelops-challenges",
+    "href": "workshop/slides/modelops-experimentation.html#modelops-challenges",
+    "title": "ModelOps and Model Experimentation",
+    "section": "ModelOps Challenges",
+    "text": "ModelOps Challenges\n\n\n\n\n\n\n\nThe Reality\n\n\nModelOps requires investment and discipline. Common challenges include:\n\n\n\n\nIntegration Complexity: Interoperability between the myriad tools and systems used throughout the ML lifecycle.\nInfrastructure Costs: The cost of scaling infrastructure to meet these demands can be prohibitive for many organizations.\nTeam Expertise: Requires cross-functional skills and expertise in data science, software engineering, and DevOps.\nEvolving Standards: New tools, techniques, and best practices emerge frequently, requiring organizations to adapt continuously.\n\n\n\nBe honest about the challenges — ModelOps isn’t free\nIntegration: most orgs have existing data pipelines, deployment systems, monitoring tools — making them work together is hard\nInfrastructure: running experiment tracking servers, model registries, monitoring systems costs money and maintenance\nTeam expertise: you need people who understand both the data science and the engineering\nEvolving standards: the landscape changes constantly — what’s best practice today might be outdated in a year\nBut here’s the key: you can start small. Today we focus on experiment tracking — something you can adopt with minimal infrastructure"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#the-four-stages-of-modelops",
+    "href": "workshop/slides/modelops-experimentation.html#the-four-stages-of-modelops",
+    "title": "ModelOps and Model Experimentation",
+    "section": "The Four Stages of ModelOps",
+    "text": "The Four Stages of ModelOps\n\nModel Experimentation Track parameters, metrics, and artifacts to enable reproducible, comparable training runs. Foundation for everything else.\nModel Versioning Ensure transparency regarding model lineage — know exactly what data, code, and hyperparameters produced each model version.\nModel Deployment Bridge the gap between experimentation and real-world application, ensuring models deliver value in production environments.\nModel Monitoring Continuously track model behavior in production to identify performance degradation and trigger retraining when needed.\n\n\n\nNow we go deeper into each stage of the lifecycle\nExperimentation: This is today’s focus. Without tracking, you can’t compare runs, reproduce results, or build systematically\nVersioning: Every model needs a lineage — what data version, what code commit, what hyperparameters. This is how you answer “can you reproduce last quarter’s model?”\nDeployment: Getting a model into production is its own discipline — APIs, containers, scaling, rollback strategies\nMonitoring: Models degrade over time as data distributions shift. Monitoring catches this and signals when retraining is needed\nThe cycle repeats: monitoring insights feed back into new experiments, improved models get versioned and deployed\nThese stages build on each other — you can’t version what you haven’t tracked, can’t deploy what you haven’t versioned, can’t monitor effectively without knowing what you deployed"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#why-these-stages-matter-in-industry",
+    "href": "workshop/slides/modelops-experimentation.html#why-these-stages-matter-in-industry",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Why These Stages Matter in Industry",
+    "text": "Why These Stages Matter in Industry\n\nScalability: Standardizes workflows for deploying and managing multiple models across various environments.\nReproducibility: Provides an audit trail of datasets, code, hyperparameters, and model versions throughout the lifecycle.\nCollaboration: Creates a structured framework that promotes transparency and knowledge sharing across teams.\nReliability: Ensures models maintain performance over time, not just at initial deployment.\nRegulatory Compliance: Delivers the transparency and traceability needed to meet legal and ethical standards.\n\n\n\nNow tie it to industry context — why do organizations invest in ModelOps?\nScalability: Think about managing 10, 50, or 100+ models. Without standardization, it becomes chaos\nReproducibility: Critical for auditing, debugging, and regulatory requirements. In finance and healthcare, you must be able to recreate any model decision\nCollaboration: Multiple data scientists working together need consistent practices. ModelOps provides that structure\nReliability: Models degrade over time as data distributions shift. The monitoring stage catches this\nCompliance: Regulated industries (finance, healthcare, insurance) must explain and justify model decisions. Full lifecycle tracking makes this possible\nThis isn’t overhead — it’s how professional data science works at scale"
+  },
+  {
+    "objectID": "workshop/slides/modelops-experimentation.html#models-in-the-classroom-vs.-production",
+    "href": "workshop/slides/modelops-experimentation.html#models-in-the-classroom-vs.-production",
+    "title": "ModelOps and Model Experimentation",
+    "section": "Models in the Classroom vs. Production",
+    "text": "Models in the Classroom vs. Production\n\n\n\n\n\n\n\n\n\nThe Gap\n\n\nAcademic projects treat models as artifacts. Industry treats them as lifecycle assets that need continuous management.\n\n\n\n\n\nStart by surfacing the fundamental mindset shift students need to make\nWalk through the visual contrast on screen:\n\nIn school: Model = one-time deliverable. Train, evaluate, submit. Focus on accuracy. Success = good grade. Lifespan = one assignment\nIn production: Model = living asset. Train, deploy, monitor, retrain. Focus on sustained business value. Success = reliable performance over time. Lifespan = months or years\n\nThe skills that get you a good grade (feature engineering, tuning, accuracy) are necessary but not sufficient\nProduction adds critical questions: Can you reproduce this? Can others use it? Does it still work next month? Can you explain decisions?\nThis isn’t a criticism of academic work — it’s recognizing that the success criteria are fundamentally different\nThis gap is what ModelOps addresses — today we start with the foundation: experiment tracking"
+  }
+]
